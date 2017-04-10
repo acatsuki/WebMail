@@ -21,34 +21,51 @@
       </ul>
 
       <div ng-show="currentFolder != null">
+
+        <div class="spacer input-group">
+          <div class="input-group-addon">
+            <span class="glyphicon glyphicon-search"></span>
+          </div>
+          <input type="text" ng-model="search" name="" class="form-control" placeholder="Rechercher un email...">
+          <div class="input-group-btn">
+            <button class="btn btn-default" ng-click="searchReset()">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </div>
+        </div>
+
         <table class="table table-striped table-hover space">
           <thead>
             <tr>
-              <th>
-                <a ng-click="sortBySender()">De</a>
-                <span class="hspacer" ng-class="{ glyphicon: sortBy == 'from', 'glyphicon-chevron-up': sortBy == 'from' && !sortDesc,
-                 'glyphicon-chevron-down': sortBy == 'from' && sortDesc}"></span>
+              <th class="colDe">
+                <a ng-click="sortEmails('from')">De</a>
+                <span class="hspacer" ng-class="cssChevronSort('from')"></span>
               </th>
-              <th>
-                <a ng-click="sortByReceiver()">&Agrave;</a>
-                <span class="hspacer" ng-class="{ glyphicon: sortBy == 'to', 'glyphicon-chevron-up': sortBy == 'to' && !sortDesc,
-                 'glyphicon-chevron-down': sortBy == 'to' && sortDesc }"></span>
+              <th class="colA">
+                <a ng-click="sortEmails('to')">&Agrave;</a>
+                <span class="hspacer" ng-class="cssChevronSort('to')"></span>
               </th>
-              <th>Objet</th>
-              <th>Date</th>
+              <th class="colObjet">
+                <a ng-click="sortEmails('subject')">Objet</a>
+                <span class="hspacer" ng-class="cssChevronSort('subject')"></span>
+              </th>
+              <th class="colDate">
+                <a ng-click="sortEmails('date')">Date</a>
+                <span class="hspacer" ng-class="cssChevronSort('date')"></span>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr class="clickable" ng-repeat="email in currentFolder.emails | orderBy:sortBy:sortDesc" ng-click="toEmail(currentFolder,email)">
-              <td>{{email.from}}</td>
-              <td>{{email.to}}</td>
-              <td>{{email.subject}}</td>
-              <td>{{email.date}}</td>
+            <tr class="clickable" ng-repeat="email in filteredEmails = (currentFolder.emails | filter:search) | orderBy:sortBy:sortDesc" ng-click="toEmail(currentFolder,email)">
+              <td ng-bind-html="email.from | highlightSearch:search"></td>
+              <td ng-bind-html="email.to | highlightSearch:search"></td>
+              <td ng-bind-html="email.subject | highlightSearch:search"></td>
+              <td>{{email.date | date:'short'}}</td>
             </tr>
           </tbody>
         </table>
 
-        <div class="alert alert-info">le dossier contien {{currentFolder.emails.length}} mails !</div>
+        <div class="alert alert-info">le dossier contien {{filteredEmails.length}} mails !</div>
 
       </div>
 
@@ -57,7 +74,7 @@
           <h1>{{currentEmail.subject}}</h1>
           <p><label for="">De:</label><span> {{currentEmail.from}}</span></p>
           <p><label for="">&Agrave;:</label><span> {{currentEmail.to}}</span></p>
-          <p><label for="">Date: </label><span> {{currentEmail.date}}</span></p>
+          <p><label for="">Date: </label><span> {{currentEmail.date | date:'short'}}</span></p>
         </div>
 
         <p ng-bind-html="currentEmail.content">{{currentEmail.content}}</p>
@@ -68,6 +85,7 @@
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.6.3/angular-locale_fr-fr.js"></script>
     <script type="text/javascript" src="app.js"></script>
   </body>
 

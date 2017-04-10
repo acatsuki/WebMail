@@ -14,6 +14,28 @@
   display: none;
 }
 
+.colDe {
+  width: 20px;
+}
+
+.colA {
+  width: 15px;
+}
+
+.colObjet {
+  width: 45px;
+}
+
+.colDate {
+  width: 15px;
+}
+
+.heighlightSearch {
+  color: #0f0f0f;
+  font-weight: bold;
+  background-color: #eec89a;
+}
+
 tbody tr:hover {
   background-color: #337ab7 !important;
   color: #FFF;
