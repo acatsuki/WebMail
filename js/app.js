@@ -44,6 +44,8 @@ angular.module('webMail', [ 'ngSanitize' ])
         ]}
     ];
 
+    $scope.nextId = 12;
+
     $scope.currentFolder = null;
     $scope.currentEmail  = null;
     $scope.sortBy = null;
@@ -51,6 +53,10 @@ angular.module('webMail', [ 'ngSanitize' ])
 
     $scope.selectFolder = function(folder) {
       $scope.currentFolder = folder;
+      if (folder) {
+        $scope.newEmail = null;
+        $scope.currentEmail = null;
+      }
     };
 
     $scope.selectedEmail = function(email) {
@@ -87,6 +93,26 @@ angular.module('webMail', [ 'ngSanitize' ])
         $scope.search = "";
       };
 
+      //Create email
+      $scope.newEmail = null;
+
+      $scope.resetMail = function() {
+        $scope.newEmail = {
+          from: 'Nicolas',
+          date: new Date()
+        };
+      };
+
+      $scope.sendEmail = function() {
+        $scope.folders.forEach(function(item){
+          if (item.value === 'SEND') {
+            $scope.newEmail.id = $scope.nextId++;
+            item.emails.push($scope.newEmail);
+            $scope.newEmail = null;
+            $location.path();
+          }
+        })
+      };
 
     /*
      * Permet de regarder en temps réel l'évolution d'un éléments ici le path de l'url
@@ -101,23 +127,26 @@ angular.module('webMail', [ 'ngSanitize' ])
       if (tabPath.length > 1) {
         var valFolder = tabPath[1];
 
-        $scope.folders.forEach(function(item) {
-          if (item.value === valFolder) {
-            $scope.selectFolder(item);
+        if (tabPath[1] === "newEmail") {
+          $scope.resetMail();
+          $scope.selectFolder(null);
+        } else {
+          $scope.folders.forEach(function (item) {
+            if (item.value === valFolder) {
+              $scope.selectFolder(item);
+            }
+          });
+          if (tabPath.length > 2) {
+            var valEmail = parseInt(tabPath[2]);
+
+            $scope.currentFolder.emails.forEach(function(item){
+              if (item.id === valEmail) {
+                  $scope.selectedEmail(item);
+              }
+
+            });
           }
-
-        });
-      }
-
-      if (tabPath.length > 2) {
-        var valEmail = parseInt(tabPath[2]);
-
-        $scope.currentFolder.emails.forEach(function(item){
-          if (item.id === valEmail) {
-            $scope.selectedEmail(item);
-          }
-
-        });
+        }
       }
     });
   })

@@ -40,3 +40,15 @@ tbody tr:hover {
   background-color: #337ab7 !important;
   color: #FFF;
 }
+
+.labelField-newEmail {
+  width: 70px;
+}
+
+.input-group {
+  width: 100%;
+}
+
+.newEmailContent {
+  width: 100%;
+}
